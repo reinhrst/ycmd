@@ -24,7 +24,9 @@ from .test_utils import ( Setup,
                           PathToTestFile,
                           StopOmniSharpServer,
                           WaitUntilOmniSharpServerReady,
-                          ChangeSpecificOptions )
+                          ChangeSpecificOptions,
+                          ActivateJediHTTPServer,
+                          WaitUntilJediHTTPServerReady )
 from webtest import TestApp, AppError
 from nose.tools import eq_, with_setup
 from .. import handlers
@@ -47,6 +49,8 @@ def foo():
 
 foo()
 """
+  ActivateJediHTTPServer( app )
+  WaitUntilJediHTTPServerReady( app )
 
   goto_data = BuildRequest( completer_target = 'filetype_default',
                             command_arguments = ['GoToDefinition'],
@@ -1261,7 +1265,9 @@ def DefinedSubcommands_Works_test():
 
   eq_( [ 'GoToDefinition',
          'GoToDeclaration',
-         'GoTo' ],
+         'GoTo',
+         'StopServer',
+         'RestartServer' ],
        app.post_json( '/defined_subcommands', subcommands_data ).json )
 
 
@@ -1272,7 +1278,9 @@ def DefinedSubcommands_WorksWhenNoExplicitCompleterTargetSpecified_test():
 
   eq_( [ 'GoToDefinition',
          'GoToDeclaration',
-         'GoTo' ],
+         'GoTo',
+         'StopServer',
+         'RestartServer' ],
        app.post_json( '/defined_subcommands', subcommands_data ).json )
 
 
